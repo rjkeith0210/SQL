@@ -1,0 +1,41 @@
+SELECT*
+FROM BIT_DB.Spotifydata
+
+--#1 What are the top 3 songs on spotify as well as their song title ?
+SELECT artist_name, track_name
+FROM BIT_DB.Spotifydata
+ORDER BY popularity desc LIMIT 3;
+
+--#2 Which artists have two or more songs on the list?
+SELECT artist_name, COUNT(artist_name) as appearance
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+HAVING appearance>=2
+ORDER BY appearance desc;
+
+--#3 What song(s) does Ariana Grande have on the list?
+SELECT track_name
+FROM BIT_DB.Spotifydata
+WHERE artist_name='Ariana Grande';
+
+--#4 What is the average danceability of Olvia Rodrigo's songs on the list?
+SELECT AVG(danceability) avg_danceability_Olvia_Rodrigo
+FROM BIT_DB.Spotifydata
+WHERE artist_name='Olivia Rodrigo'
+GROUP BY artist_name;
+
+--#5 Which artist had the least energetic song on the list?
+SELECT artist_name
+FROM BIT_DB.Spotifydata
+ORDER BY energy asc LIMIT 1;
+
+--#6 Which artist had the shortest song, and what is the track name?
+SELECT artist_name, track_name
+FROM BIT_DB.Spotifydata
+ORDER BY duration_ms desc LIMIT 1;
+
+--#7 What's the average danceability for the 1o most posbular songs?
+SELECT AVG(danceability) as avg_danceability_top10
+FROM BIT_DB.Spotifydata
+ORDER BY popularity desc LIMIT 10;
+
