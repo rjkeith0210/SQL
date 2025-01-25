@@ -1,0 +1,110 @@
+--#1 Show Customers (their full names, customer ID, and country) who are not 
+--in the US. (Hint: != or <> can be used to say "is not equal to").
+SELECT *
+FROM chinook.customers;
+
+SELECT FirstName, LastName, Customerid, Country
+FROM chinook.customers
+WHERE Country<>"USA";
+
+--#2 Show only the Customers from Brazil.
+SELECT FirstName, LastName, Country
+FROM chinook.customers
+WHERE country="Brazil";
+
+--#3 Find the invoices of customers who are from Brazil. The resulting table 
+--should show the customer's full name, invoice ID, date of the invoice
+--,and billing country
+SELECT *
+FROM chinook.invoices;
+
+SELECT inv.invoiceid, CONCAT(cust.FirstName,' ', cust.LastName) AS CustomerFullName, inv.InvoiceDate, inv.BillingCountry
+FROM chinook.invoices inv
+LEFT JOIN chinook.customers cust
+ON inv.Customerid=cust.Customerid
+WHERE cust.country="Brazil";
+
+--#4 Show the Employees who are Sales Agents
+SELECT*
+FROM chinook.employees;
+
+SELECT LastName, FirstName, Title
+FROM chinook.employees
+WHERE title="Sales Support Agent";
+
+--#5 Find a unique/distinct list of billing countries from the invoice table
+SELECT *
+FROM chinook.invoices;
+
+SELECT DISTINCT(billingcountry)
+FROM chinook.invoices;
+
+--#6 Provide a query that shows the invoices associated with each sales angent.
+--The resulting table should include Sales Agent's full name.
+SELECT CONCAT(em.FirstName,' ', em.LastName) AS SalesAgentFullName, inv.invoiceid, em.title
+FROM chinook.employees em
+LEFT JOIN chinook.customers cust
+ON em.Employeeid=cust.supportRepid
+LEFT JOIN chinook.invoices inv
+ON cust.Customerid=inv.Customerid
+WHERE em.title="Sales Support Agent";
+
+--#7 How many invoices were there in 2009?
+SELECT *
+FROM chinook.invoices;
+
+SELECT*
+FROM chinook.invoice_items;
+
+SELECT COUNT(item.quantity) invoice_quant_2009
+FROM chinook.invoice_items item
+LEFT JOIN chinook.invoices inv
+ON item.invoiceid=inv.invoiceid
+WHERE inv.invoicedate LIKE '%2009%';
+
+--#8 What were the total sales for 2009?
+SELECT SUM(Total) as TotalSales_2009
+FROM chinook.invoices
+WHERE InvoiceDate LIKE '%2009%';
+
+--#9 Write a query that includes the purchased track name with each invoice line id
+SELECT track.name, item.invoiceid
+FROM chinook.tracks track
+LEFT JOIN chinook.invoice_items item
+ON track.Trackid=item.Trackid
+WHERE item.quantity<> "NULL";
+
+--#10 Show the total sales made by each sales agent?
+SELECT SUM(inv.total) AS TotalSales, CONCAT(em.FirstName,' ', em.LastName) AS SalesAgentFullName
+, em.title
+FROM chinook.invoices inv
+LEFT JOIN chinook.customers cust
+ON inv.Customerid=cust.Customerid
+LEFT JOIN chinook.employees em
+ON cust.SupportRepid=em.Employeeid
+WHERE em.title='Sales Support Agent'
+GROUP BY SalesAgentFullName;
+
+--#11 What is the total sales from customers in Germany
+SELECT SUM(inv.total) AS total_sales, cust.country
+FROM chinook.invoices inv
+LEFT JOIN chinook.customers cust
+ON inv.Customerid=cust.Customerid
+WHERE country = 'Germany'
+GROUP BY cust.country;
+
+--#12 Find the full names of employees in the IT department and their job title
+SELECT CONCAT(FirstName, ' ', LastName) AS FullName, title
+FROM chinook.employees
+WHERE title LIKE '%IT%';
+
+--#13 which country had the most sales?
+SELECT DISTINCT(cust.country),SUM(inv.total) as TotalSales
+FROM chinook.invoices inv
+LEFT JOIN chinook.customers cust
+ON inv.Customerid=cust.Customerid
+GROUP BY country
+ORDER BY TotalSales Desc LIMIT 1;
+
+
+
